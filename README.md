@@ -100,8 +100,8 @@ creating the org.
 
 **When enabling backups:**
 
-* Include chef-server-populator::restore recipe
-* Set backup cron interval with node[:chef_server_populator][:schedule]
+* Include chef-server-populator::backups recipe
+* Set backup cron interval with node[:chef_server_populator][:backup][:schedule]
 * Optionally set a remote storage location with node[:chef_server_populator][:backup][:remote][:connection]
 * Backups include both a pg_dump of the entire chef database and a tarball of the Chef data directory
 
