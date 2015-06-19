@@ -20,7 +20,8 @@ else
 end
 
 execute 'backup chef server stop' do
-  command 'chef-server-ctl stop'
+  # sometimes redis gets stuck shutting down, but all the data goes away anyhow
+  command 'chef-server-ctl graceful-kill'
   creates '/etc/opscode/restore.json'
 end
 
@@ -33,6 +34,7 @@ end
 execute 'restoring chef data' do
   command "/opt/opscode/embedded/bin/psql -f #{file} postgres"
   user 'opscode-pgsql'
+  retries 5
   creates '/etc/opscode/restore.json'
 end
 
@@ -52,7 +54,8 @@ execute 'restore chef server restart' do
 end
 
 execute 'restore chef server wait for opscode-erchef' do
-  command 'sleep 30'
+  command "chef-server-ctl org-list || sleep 5"
+  retries 10
   creates '/etc/opscode/restore.json'
 end
 
